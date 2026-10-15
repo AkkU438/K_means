@@ -2,7 +2,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 import struct
 
-#Need to add the old work from homework 2 here. Then need to make the k-means algo - then start working on the stuff
 
 with open("data/train-images.idx3-ubyte", "rb") as f:
     magic, num_images, rows, cols = struct.unpack(">IIII", f.read(16))
@@ -15,7 +14,7 @@ def kmeans(images, k):
     centroids = images[np.random.choice(images.shape[0], k, replace=False)]
     
     for _ in range(100):
-        distances = np.linalg.norm(images[:, np.newaxis] - centroids, axis=2)
+        distances = (np.sum(images**2, axis=1)[:, np.newaxis] + np.sum(centroids**2, axis=1) - 2 * images @ centroids.T)
         labels = np.argmin(distances, axis=1)
         
         new_centroids = np.array([images[labels == i].mean(axis=0) for i in range(k)])
@@ -48,4 +47,7 @@ def display_centroids(centroids):
 
     plt.tight_layout()
     plt.show()
+
+centroids_30 = kmeans(images, 30)
+display_centroids(centroids_30)
 
